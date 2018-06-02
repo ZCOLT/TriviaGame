@@ -42,6 +42,11 @@ console.log("yo");
       correctAnswer: "Mr.Belding"
     }];
 
+    var numCorrect = 0;
+    var numWrong = 0;
+    var timeLeft = 10
+    var timerId;
+
 //display wach one of those questions on the screen
   //for loop over all questions and display each one individually
    // Don 't let the player pick more than one answer per question. //look for html option or select dropdown
@@ -69,7 +74,7 @@ console.log("yo");
   
       $('#formGroups').append(row);
      }
-     $('#formGroups').append($(`<button id="submit">sumbit</button>`))
+     $('#formGroups').append($(`<button id="submit">submit</button>`))
    }
 
    generateQuestions()
@@ -80,16 +85,61 @@ console.log("yo");
    $('#formGroups').on('click', `#submit`, function (event) {
       event.preventDefault();
 
-        for (var i = 0; i <questions.length; i++){
-            var value = $(`input[name=gridRadios${i}]:checked`).val()
-            console.log(value);
-        }
+        getResults()
 
+        
    })
    //$("input[name=rate]:checked").val()
   
   // The player will have a limited amount of time to finish the quiz.
     // Don 't forget to include a countdown timer.
 
+  function startTimer () {
+    //start our timer
+    $("#timer").text(timeLeft)
+    timerId = setInterval(timer, 1000)
+  }
+
+  function timer() {
+    //count down our time var
+    timeLeft--
+    $("#timer").text(timeLeft)
+    //check to see if we have time left
+      //if we have time left count down
+      //else show the correct and wrong
+    if (timeLeft <= 0) {
+      clearInterval(timerId)
+      getResults()
+      restart()
+    }
+  }
+  startTimer()
 // The game ends when the time runs out or they hit a submit button.The page will reveal the number of questions that players answer correctly and incorrectly.
 
+function getResults(params) {
+  for (var i = 0; i < questions.length; i++) {
+    var value = $(`input[name=gridRadios${i}]:checked`).val()
+    console.log(value);
+    //if radio button is equal to the correct answer then we know they got it right
+    if (value == questions[i].correctAnswer) {
+      numCorrect++
+    } else {
+      numWrong++
+    }
+    //var to hold number of things correct number
+    //increment 
+    //else
+    //we know they got it wrong
+    //var to hold the things they got wrong number
+    //incement
+  }
+
+  alert(`hey you got ${numCorrect} correct and ${numWrong} wrong`)
+}
+
+function restart (){
+  timeLeft = 10;
+  numCorrect = 0;
+  numWrong = 0;
+  startTimer()
+}
